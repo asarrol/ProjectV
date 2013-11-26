@@ -1,6 +1,6 @@
 # Overview
 
-This is a standalone version of the Dots/DotView/TouchMe MVC Android UI Demo from
+This is a standalone Gradle-based version of the Dots/DotView/TouchMe MVC Android UI Demo from
 [Programming Android, 2nd Edition](http://proquestcombo.safaribooksonline.com/book/programming/android/9781449332921)
 by Zigurd Mednieks et al., O'Reilly Media, 2012, ISBN-13: 978-1-4493-1664-8.
 
