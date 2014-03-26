@@ -213,9 +213,9 @@ public class TouchMe extends Activity {
             @Override public void onDotsChange(Dots dots) {
                 Dot d = dots.getLastDot();
                 // This code makes the UI unacceptably unresponsive.
-                // ... investigating
-                //tb1.setText((null == d) ? "" : String.valueOf(d.getX()));
-                //tb2.setText((null == d) ? "" : String.valueOf(d.getY()));
+                // ... investigating - in March, 2014, this was not a problem
+                tb1.setText((null == d) ? "" : String.valueOf(d.getX())); // uncommented
+                tb2.setText((null == d) ? "" : String.valueOf(d.getY())); // uncommented
                 dotView.invalidate();
             } });
     }
