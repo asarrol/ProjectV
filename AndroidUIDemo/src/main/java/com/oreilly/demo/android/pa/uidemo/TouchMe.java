@@ -126,7 +126,7 @@ public class TouchMe extends Activity {
         public void run() {
             while (!done) {
                 hdlr.post(makeDots);
-                try { Thread.sleep(5000); }
+                try { Thread.sleep(2000); }
                 catch (InterruptedException e) { }
             }
         }
