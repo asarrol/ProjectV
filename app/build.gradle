@@ -15,7 +15,7 @@ android {
     buildToolsVersion "22.0.1"
 
     defaultConfig {
-        applicationId "edu.luc.etl.cs313.android.clickcounter"
+        applicationId "edu.luc.etl.cs313.android.uidemo"
         minSdkVersion 15
         targetSdkVersion 22
         versionCode 1
