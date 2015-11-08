@@ -1,1 +1,1 @@
-include ':AndroidUIDemo'
+include ':app'
