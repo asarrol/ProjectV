@@ -15,9 +15,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.View.OnFocusChangeListener;
-import android.view.View.OnKeyListener;
-import android.widget.Button;
 import android.widget.EditText;
 
 import com.oreilly.demo.android.pa.uidemo.model.Dot;
@@ -33,11 +30,9 @@ public class TouchMe extends Activity {
     public static final int DOT_DIAMETER = 6;
 
     /** Listen for taps. */
-    private static final class TrackingTouchListener
-        implements View.OnTouchListener
-    {
+    private static final class TrackingTouchListener implements View.OnTouchListener {
         private final Dots mDots;
-        private List<Integer> tracks = new ArrayList<Integer>();
+        private List<Integer> tracks = new ArrayList<>();
 
         TrackingTouchListener(final Dots dots) { mDots = dots; }
 
@@ -48,7 +43,7 @@ public class TouchMe extends Activity {
                 case MotionEvent.ACTION_POINTER_DOWN:
                     final int idx1 = (action & MotionEvent.ACTION_POINTER_INDEX_MASK)
                         >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
-                    tracks.add(Integer.valueOf(evt.getPointerId(idx1)));
+                    tracks.add(evt.getPointerId(idx1));
                     break;
 
                 case MotionEvent.ACTION_POINTER_UP:
@@ -60,7 +55,7 @@ public class TouchMe extends Activity {
                 case MotionEvent.ACTION_MOVE:
                     final int n = evt.getHistorySize();
                     for (Integer i: tracks) {
-                        final int idx = evt.findPointerIndex(i.intValue());
+                        final int idx = evt.findPointerIndex(i);
                         for (int j = 0; j < n; j++) {
                             addDot(
                                 mDots,
@@ -78,7 +73,7 @@ public class TouchMe extends Activity {
             }
 
             for (final Integer i: tracks) {
-                final int idx = evt.findPointerIndex(i.intValue());
+                final int idx = evt.findPointerIndex(i);
                 addDot(
                     mDots,
                     evt.getX(idx),
@@ -96,11 +91,7 @@ public class TouchMe extends Activity {
                 final float y,
                 final float p,
                 final float s) {
-            dots.addDot(
-                x,
-                y,
-                Color.CYAN,
-                (int) ((p + 0.5) * (s + 0.5) * DOT_DIAMETER));
+            dots.addDot(x, y, Color.CYAN, (int) ((p + 0.5) * (s + 0.5) * DOT_DIAMETER));
         }
     }
 
@@ -111,9 +102,7 @@ public class TouchMe extends Activity {
         final int color;
 
         private final Handler hdlr = new Handler();
-        private final Runnable makeDots = new Runnable() {
-            @Override public void run() { makeDot(dots, view, color); }
-        };
+        private final Runnable makeDots;
 
         private volatile boolean done;
 
@@ -121,6 +110,7 @@ public class TouchMe extends Activity {
             this.dots = dots;
             this.view = view;
             this.color = color;
+            makeDots = () -> makeDot(this.dots, this.view, this.color);
         }
 
         public void done() { done = true; }
@@ -129,8 +119,7 @@ public class TouchMe extends Activity {
         public void run() {
             while (!done) {
                 hdlr.post(makeDots);
-                try { Thread.sleep(2000); }
-                catch (InterruptedException e) { }
+                try { Thread.sleep(2000); } catch (InterruptedException e) { return; }
             }
         }
     }
@@ -160,67 +149,58 @@ public class TouchMe extends Activity {
         dotView.setOnCreateContextMenuListener(this);
         dotView.setOnTouchListener(new TrackingTouchListener(dotModel));
 
-        dotView.setOnKeyListener(new OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (KeyEvent.ACTION_DOWN != event.getAction()) {
+        dotView.setOnKeyListener((final View v, final int keyCode, final KeyEvent event) -> {
+            if (KeyEvent.ACTION_DOWN != event.getAction()) {
+                return false;
+            }
+
+            int color;
+            switch (keyCode) {
+                case KeyEvent.KEYCODE_SPACE:
+                    color = Color.MAGENTA;
+                    break;
+                case KeyEvent.KEYCODE_ENTER:
+                    color = Color.BLUE;
+                    break;
+                default:
                     return false;
-                }
+            }
 
-                int color;
-                switch (keyCode) {
-                    case KeyEvent.KEYCODE_SPACE:
-                        color = Color.MAGENTA;
-                        break;
-                    case KeyEvent.KEYCODE_ENTER:
-                        color = Color.BLUE;
-                        break;
-                    default:
-                        return false;
-                }
+            makeDot(dotModel, dotView, color);
 
-                makeDot(dotModel, dotView, color);
-
-                return true;
-            } });
+            return true;
+        });
 
 
-        dotView.setOnFocusChangeListener(new OnFocusChangeListener() {
-            @Override public void onFocusChange(final View v, final boolean hasFocus) {
-                if (!hasFocus && (null != dotGenerator)) {
-                    dotGenerator.done();
-                    dotGenerator = null;
-                }
-                else if (hasFocus && (null == dotGenerator)) {
-                    dotGenerator
-                    = new DotGenerator(dotModel, dotView, Color.BLACK);
-                    new Thread(dotGenerator).start();
-                }
-            } });
+        dotView.setOnFocusChangeListener((final View v, final boolean hasFocus) -> {
+            if (!hasFocus && (null != dotGenerator)) {
+                dotGenerator.done();
+                dotGenerator = null;
+            }
+            else if (hasFocus && (null == dotGenerator)) {
+                dotGenerator = new DotGenerator(dotModel, dotView, Color.BLACK);
+                new Thread(dotGenerator).start();
+            }
+        });
 
         // wire up the controller
-        ((Button) findViewById(R.id.button1)).setOnClickListener(
-            new Button.OnClickListener() {
-                @Override public void onClick(final View v) {
-                    makeDot(dotModel, dotView, Color.RED);
-                } });
-        ((Button) findViewById(R.id.button2)).setOnClickListener(
-            new Button.OnClickListener() {
-                @Override public void onClick(final View v) {
-                    makeDot(dotModel, dotView, Color.GREEN);
-                } });
+        findViewById(R.id.button1).setOnClickListener((final View v) ->
+            makeDot(dotModel, dotView, Color.RED)
+        );
+        findViewById(R.id.button2).setOnClickListener((final View v) ->
+            makeDot(dotModel, dotView, Color.GREEN)
+        );
 
         final EditText tb1 = (EditText) findViewById(R.id.text1);
         final EditText tb2 = (EditText) findViewById(R.id.text2);
-        dotModel.setDotsChangeListener(new Dots.DotsChangeListener() {
-            @Override public void onDotsChange(Dots dots) {
-                Dot d = dots.getLastDot();
-                // This code makes the UI unacceptably unresponsive.
-                // ... investigating - in March, 2014, this was not a problem
-                tb1.setText((null == d) ? "" : String.valueOf(d.getX())); // uncommented
-                tb2.setText((null == d) ? "" : String.valueOf(d.getY())); // uncommented
-                dotView.invalidate();
-            } });
+        dotModel.setDotsChangeListener((Dots dots) -> {
+            Dot d = dots.getLastDot();
+            // This code makes the UI unacceptably unresponsive.
+            // ... investigating - in March, 2014, this was not a problem
+            tb1.setText((null == d) ? "" : String.valueOf(d.getX())); // uncommented
+            tb2.setText((null == d) ? "" : String.valueOf(d.getY())); // uncommented
+            dotView.invalidate();
+        });
     }
 
     /** Install an options menu. */
@@ -235,7 +215,6 @@ public class TouchMe extends Activity {
             case R.id.menu_clear:
                 dotModel.clearDots();
                 return true;
-
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -246,8 +225,7 @@ public class TouchMe extends Activity {
             final ContextMenu menu,
             final View v,
             final ContextMenuInfo menuInfo) {
-        menu.add(Menu.NONE, 1, Menu.NONE, "Clear")
-            .setAlphabeticShortcut('x');
+        menu.add(Menu.NONE, 1, Menu.NONE, "Clear").setAlphabeticShortcut('x');
     }
 
     /** Respond to a context menu selection. */
@@ -256,7 +234,7 @@ public class TouchMe extends Activity {
             case 1:
                 dotModel.clearDots();
                 return true;
-            default: ;
+            default:
         }
         return false;
     }

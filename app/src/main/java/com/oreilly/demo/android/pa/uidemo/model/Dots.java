@@ -13,7 +13,7 @@ public class Dots {
         void onDotsChange(Dots dots);
     }
 
-    private final LinkedList<Dot> dots = new LinkedList<Dot>();
+    private final LinkedList<Dot> dots = new LinkedList<>();
     private final List<Dot> safeDots = Collections.unmodifiableList(dots);
 
     private DotsChangeListener dotsChangeListener;
