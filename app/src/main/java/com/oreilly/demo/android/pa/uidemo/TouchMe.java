@@ -39,30 +39,28 @@ public class TouchMe extends Activity {
         private final Dots mDots;
         private List<Integer> tracks = new ArrayList<Integer>();
 
-        TrackingTouchListener(Dots dots) { mDots = dots; }
+        TrackingTouchListener(final Dots dots) { mDots = dots; }
 
-        @Override public boolean onTouch(View v, MotionEvent evt) {
-            int n;
-            int idx;
-            int action = evt.getAction();
+        @Override public boolean onTouch(final View v, final MotionEvent evt) {
+            final int action = evt.getAction();
             switch (action & MotionEvent.ACTION_MASK) {
                 case MotionEvent.ACTION_DOWN:
                 case MotionEvent.ACTION_POINTER_DOWN:
-                    idx = (action & MotionEvent.ACTION_POINTER_INDEX_MASK)
+                    final int idx1 = (action & MotionEvent.ACTION_POINTER_INDEX_MASK)
                         >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
-                    tracks.add(Integer.valueOf(evt.getPointerId(idx)));
+                    tracks.add(Integer.valueOf(evt.getPointerId(idx1)));
                     break;
 
                 case MotionEvent.ACTION_POINTER_UP:
-                    idx = (action & MotionEvent.ACTION_POINTER_INDEX_MASK)
+                    final int idx2 = (action & MotionEvent.ACTION_POINTER_INDEX_MASK)
                         >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
-                    tracks.remove(Integer.valueOf(evt.getPointerId(idx)));
+                    tracks.remove(Integer.valueOf(evt.getPointerId(idx2)));
                     break;
 
                 case MotionEvent.ACTION_MOVE:
-                    n = evt.getHistorySize();
+                    final int n = evt.getHistorySize();
                     for (Integer i: tracks) {
-                        idx = evt.findPointerIndex(i.intValue());
+                        final int idx = evt.findPointerIndex(i.intValue());
                         for (int j = 0; j < n; j++) {
                             addDot(
                                 mDots,
@@ -79,8 +77,8 @@ public class TouchMe extends Activity {
                     return false;
             }
 
-            for (Integer i: tracks) {
-                idx = evt.findPointerIndex(i.intValue());
+            for (final Integer i: tracks) {
+                final int idx = evt.findPointerIndex(i.intValue());
                 addDot(
                     mDots,
                     evt.getX(idx),
@@ -92,7 +90,12 @@ public class TouchMe extends Activity {
             return true;
         }
 
-        private void addDot(Dots dots, float x, float y, float p, float s) {
+        private void addDot(
+                final Dots dots,
+                final float x,
+                final float y,
+                final float p,
+                final float s) {
             dots.addDot(
                 x,
                 y,
@@ -114,7 +117,7 @@ public class TouchMe extends Activity {
 
         private volatile boolean done;
 
-        DotGenerator(Dots dots, DotView view, int color) {
+        DotGenerator(final Dots dots, final DotView view, final int color) {
             this.dots = dots;
             this.view = view;
             this.color = color;
@@ -144,7 +147,7 @@ public class TouchMe extends Activity {
     DotGenerator dotGenerator;
 
     /** Called when the activity is first created. */
-    @Override public void onCreate(Bundle state) {
+    @Override public void onCreate(final Bundle state) {
         super.onCreate(state);
 
         // install the view
@@ -183,7 +186,7 @@ public class TouchMe extends Activity {
 
 
         dotView.setOnFocusChangeListener(new OnFocusChangeListener() {
-            @Override public void onFocusChange(View v, boolean hasFocus) {
+            @Override public void onFocusChange(final View v, final boolean hasFocus) {
                 if (!hasFocus && (null != dotGenerator)) {
                     dotGenerator.done();
                     dotGenerator = null;
@@ -198,12 +201,12 @@ public class TouchMe extends Activity {
         // wire up the controller
         ((Button) findViewById(R.id.button1)).setOnClickListener(
             new Button.OnClickListener() {
-                @Override public void onClick(View v) {
+                @Override public void onClick(final View v) {
                     makeDot(dotModel, dotView, Color.RED);
                 } });
         ((Button) findViewById(R.id.button2)).setOnClickListener(
             new Button.OnClickListener() {
-                @Override public void onClick(View v) {
+                @Override public void onClick(final View v) {
                     makeDot(dotModel, dotView, Color.GREEN);
                 } });
 
@@ -221,13 +224,13 @@ public class TouchMe extends Activity {
     }
 
     /** Install an options menu. */
-    @Override public boolean onCreateOptionsMenu(Menu menu) {
+    @Override public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.simple_menu, menu);
         return true;
     }
 
     /** Respond to an options menu selection. */
-    @Override public boolean onOptionsItemSelected(MenuItem item) {
+    @Override public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_clear:
                 dotModel.clearDots();
@@ -240,23 +243,21 @@ public class TouchMe extends Activity {
 
     /** Install a context menu. */
     @Override public void onCreateContextMenu(
-        ContextMenu menu,
-        View v,
-        ContextMenuInfo menuInfo)
-    {
+            final ContextMenu menu,
+            final View v,
+            final ContextMenuInfo menuInfo) {
         menu.add(Menu.NONE, 1, Menu.NONE, "Clear")
             .setAlphabeticShortcut('x');
     }
 
     /** Respond to a context menu selection. */
-    @Override public boolean onContextItemSelected(MenuItem item) {
+    @Override public boolean onContextItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
             case 1:
                 dotModel.clearDots();
                 return true;
             default: ;
         }
-
         return false;
     }
 
@@ -265,8 +266,8 @@ public class TouchMe extends Activity {
      * @param view the view in which we're drawing dots
      * @param color the color of the dot
      */
-    void makeDot(Dots dots, DotView view, int color) {
-        int pad = (DOT_DIAMETER + 2) * 2;
+    void makeDot(final Dots dots, final DotView view, final int color) {
+        final int pad = (DOT_DIAMETER + 2) * 2;
         dots.addDot(
             DOT_DIAMETER + (rand.nextFloat() * (view.getWidth() - pad)),
             DOT_DIAMETER + (rand.nextFloat() * (view.getHeight() - pad)),

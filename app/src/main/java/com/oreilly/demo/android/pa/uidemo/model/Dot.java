@@ -13,7 +13,7 @@ public final class Dot {
      * @param color the color.
      * @param diameter dot diameter.
      */
-    public Dot(float x, float y, int color, int diameter) {
+    public Dot(final float x, final float y, final int color, final int diameter) {
         this.x = x;
         this.y = y;
         this.color = color;
