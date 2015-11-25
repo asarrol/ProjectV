@@ -3,11 +3,12 @@ package com.oreilly.demo.android.pa.uidemo;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -22,9 +23,7 @@ import com.oreilly.demo.android.pa.uidemo.model.Dots;
 import com.oreilly.demo.android.pa.uidemo.view.DotView;
 
 
-/**
- * Android UI demo program
- */
+/** Android UI demo program */
 public class TouchMe extends Activity {
     /** Dot diameter */
     public static final int DOT_DIAMETER = 6;
@@ -95,45 +94,16 @@ public class TouchMe extends Activity {
         }
     }
 
-    /** Generate new dots, one per second. */
-    private final class DotGenerator implements Runnable {
-        final Dots dots;
-        final DotView view;
-        final int color;
-
-        private final Handler hdlr = new Handler();
-        private final Runnable makeDots;
-
-        private volatile boolean done;
-
-        DotGenerator(final Dots dots, final DotView view, final int color) {
-            this.dots = dots;
-            this.view = view;
-            this.color = color;
-            makeDots = () -> makeDot(this.dots, this.view, this.color);
-        }
-
-        public void done() { done = true; }
-
-        @Override
-        public void run() {
-            while (!done) {
-                hdlr.post(makeDots);
-                try { Thread.sleep(2000); } catch (InterruptedException e) { return; }
-            }
-        }
-    }
-
     private final Random rand = new Random();
 
     /** The application model */
-    final Dots dotModel = new Dots();
+    private final Dots dotModel = new Dots();
 
     /** The application view */
-    DotView dotView;
+    private DotView dotView;
 
     /** The dot generator */
-    DotGenerator dotGenerator;
+    private Timer dotGenerator;
 
     /** Called when the activity is first created. */
     @Override public void onCreate(final Bundle state) {
@@ -171,18 +141,6 @@ public class TouchMe extends Activity {
             return true;
         });
 
-
-        dotView.setOnFocusChangeListener((final View v, final boolean hasFocus) -> {
-            if (!hasFocus && (null != dotGenerator)) {
-                dotGenerator.done();
-                dotGenerator = null;
-            }
-            else if (hasFocus && (null == dotGenerator)) {
-                dotGenerator = new DotGenerator(dotModel, dotView, Color.BLACK);
-                new Thread(dotGenerator).start();
-            }
-        });
-
         // wire up the controller
         findViewById(R.id.button1).setOnClickListener((final View v) ->
             makeDot(dotModel, dotView, Color.RED)
@@ -193,14 +151,34 @@ public class TouchMe extends Activity {
 
         final EditText tb1 = (EditText) findViewById(R.id.text1);
         final EditText tb2 = (EditText) findViewById(R.id.text2);
-        dotModel.setDotsChangeListener((Dots dots) -> {
-            Dot d = dots.getLastDot();
-            // This code makes the UI unacceptably unresponsive.
-            // ... investigating - in March, 2014, this was not a problem
-            tb1.setText((null == d) ? "" : String.valueOf(d.getX())); // uncommented
-            tb2.setText((null == d) ? "" : String.valueOf(d.getY())); // uncommented
+        dotModel.setDotsChangeListener((Dots dots) -> runOnUiThread(() -> {
+            final Dot d = dots.getLastDot();
+            tb1.setText((null == d) ? "" : String.valueOf(d.getX()));
+            tb2.setText((null == d) ? "" : String.valueOf(d.getY()));
             dotView.invalidate();
-        });
+        }));
+    }
+
+    @Override public void onResume() {
+        super.onResume();
+        if (dotGenerator == null) {
+            dotGenerator = new Timer();
+            // generate new dots, one every two seconds
+            dotGenerator.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    makeDot(dotModel, dotView, Color.BLACK);
+                }
+            }, /*initial delay*/ 0, /*periodic delay*/ 2000);
+        }
+    }
+
+    @Override public void onPause() {
+        super.onPause();
+        if (dotGenerator != null) {
+            dotGenerator.cancel();
+            dotGenerator = null;
+        }
     }
 
     /** Install an options menu. */
@@ -235,8 +213,8 @@ public class TouchMe extends Activity {
                 dotModel.clearDots();
                 return true;
             default:
+                return false;
         }
-        return false;
     }
 
     /**
