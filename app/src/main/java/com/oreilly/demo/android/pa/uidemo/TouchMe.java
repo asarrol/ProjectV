@@ -48,7 +48,7 @@ public class TouchMe extends Activity {
                 case MotionEvent.ACTION_POINTER_UP:
                     final int idx2 = (action & MotionEvent.ACTION_POINTER_INDEX_MASK)
                         >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
-                    tracks.remove(Integer.valueOf(evt.getPointerId(idx2)));
+                    tracks.remove(evt.getPointerId(idx2));
                     break;
 
                 case MotionEvent.ACTION_MOVE:
@@ -151,12 +151,12 @@ public class TouchMe extends Activity {
 
         final EditText tb1 = (EditText) findViewById(R.id.text1);
         final EditText tb2 = (EditText) findViewById(R.id.text2);
-        dotModel.setDotsChangeListener((Dots dots) -> runOnUiThread(() -> {
+        dotModel.setDotsChangeListener((Dots dots) -> {
             final Dot d = dots.getLastDot();
             tb1.setText((null == d) ? "" : String.valueOf(d.getX()));
             tb2.setText((null == d) ? "" : String.valueOf(d.getY()));
             dotView.invalidate();
-        }));
+        });
     }
 
     @Override public void onResume() {
@@ -167,7 +167,7 @@ public class TouchMe extends Activity {
             dotGenerator.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    makeDot(dotModel, dotView, Color.BLACK);
+                    runOnUiThread(() -> makeDot(dotModel, dotView, Color.BLACK));
                 }
             }, /*initial delay*/ 0, /*periodic delay*/ 2000);
         }
