@@ -167,6 +167,8 @@ public class TouchMe extends Activity {
             dotGenerator.schedule(new TimerTask() {
                 @Override
                 public void run() {
+                    // must invoke makeDot on the UI thread to avoid
+                    // ConcurrentModificationException on list of dots
                     runOnUiThread(() -> makeDot(dotModel, dotView, Color.BLACK));
                 }
             }, /*initial delay*/ 0, /*periodic delay*/ 2000);
