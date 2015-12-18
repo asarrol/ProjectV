@@ -151,7 +151,7 @@ public class TouchMe extends Activity {
 
         final EditText tb1 = (EditText) findViewById(R.id.text1);
         final EditText tb2 = (EditText) findViewById(R.id.text2);
-        dotModel.setDotsChangeListener((Dots dots) -> {
+        dotModel.setDotsChangeListener((final Dots dots) -> {
             final Dot d = dots.getLastDot();
             tb1.setText((null == d) ? "" : String.valueOf(d.getX()));
             tb2.setText((null == d) ? "" : String.valueOf(d.getY()));
