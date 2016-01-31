@@ -25,7 +25,7 @@ public class DotView extends View {
     /**
      * @param context the rest of the application
      */
-    public DotView(Context context) {
+    public DotView(final Context context) {
         super(context);
         setFocusableInTouchMode(true);
     }
@@ -34,7 +34,7 @@ public class DotView extends View {
      * @param context
      * @param attrs
      */
-    public DotView(Context context, AttributeSet attrs) {
+    public DotView(final Context context, final AttributeSet attrs) {
         super(context, attrs);
         setFocusableInTouchMode(true);
     }
@@ -44,7 +44,7 @@ public class DotView extends View {
      * @param attrs
      * @param defStyle
      */
-    public DotView(Context context, AttributeSet attrs, int defStyle) {
+    public DotView(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
         setFocusableInTouchMode(true);
     }
@@ -52,13 +52,13 @@ public class DotView extends View {
     /**
      * @param dots
      */
-    public void setDots(Dots dots) { this.dots = dots; }
+    public void setDots(final Dots dots) { this.dots = dots; }
 
     /**
      * @see android.view.View#onDraw(android.graphics.Canvas)
      */
-    @Override protected void onDraw(Canvas canvas) {
-        Paint paint = new Paint();
+    @Override protected void onDraw(final Canvas canvas) {
+        final Paint paint = new Paint();
         paint.setStyle(Style.STROKE);
         paint.setColor(hasFocus() ? Color.BLUE : Color.GRAY);
         canvas.drawRect(0, 0, getWidth() - 1, getHeight() -1, paint);
@@ -66,7 +66,7 @@ public class DotView extends View {
         if (null == dots) { return; }
 
         paint.setStyle(Style.FILL);
-        for (Dot dot : dots.getDots()) {
+        for (final Dot dot : dots.getDots()) {
             paint.setColor(dot.getColor());
             canvas.drawCircle(
                 dot.getX(),

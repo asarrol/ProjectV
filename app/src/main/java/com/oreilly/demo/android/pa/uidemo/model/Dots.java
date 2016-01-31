@@ -13,13 +13,13 @@ public class Dots {
         void onDotsChange(Dots dots);
     }
 
-    private final LinkedList<Dot> dots = new LinkedList<Dot>();
+    private final LinkedList<Dot> dots = new LinkedList<>();
     private final List<Dot> safeDots = Collections.unmodifiableList(dots);
 
     private DotsChangeListener dotsChangeListener;
 
     /** @param l set the change listener. */
-    public void setDotsChangeListener(DotsChangeListener l) {
+    public void setDotsChangeListener(final DotsChangeListener l) {
         dotsChangeListener = l;
     }
 
@@ -37,7 +37,7 @@ public class Dots {
      * @param color dot color.
      * @param diameter dot size.
       */
-    public void addDot(float x, float y, int color, int diameter) {
+    public void addDot(final float x, final float y, final int color, final int diameter) {
         dots.add(new Dot(x, y, color, diameter));
         notifyListener();
     }
