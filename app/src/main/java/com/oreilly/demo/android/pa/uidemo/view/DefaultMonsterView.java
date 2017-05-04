@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.media.ThumbnailUtils;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -56,10 +57,13 @@ public class DefaultMonsterView extends View {
     protected void onDraw(Canvas canvas) {
         Bitmap bitmapp = BitmapFactory.decodeResource(getResources(), R.drawable.green);
         Bitmap bitmapv = BitmapFactory.decodeResource(getResources(), R.drawable.yellow);
+        bitmapp = ThumbnailUtils.extractThumbnail(bitmapp,cellsize,cellsize);
+        bitmapv = ThumbnailUtils.extractThumbnail(bitmapv,cellsize,cellsize);
         Cell[][] grid = monstermodel.getWorld().getGrid();
         for (int i = 0; i < gridwidth; i++) {
             for (int j = 0; j < gridheight; j++) {
                 Cell cell = grid[i][j];
+
                 if (cell.getOccupants().size() > 0) {
                     if (cell.getOccupants().size() <= 0) return;
 
@@ -72,6 +76,7 @@ public class DefaultMonsterView extends View {
                         bitmap = bitmapv;
                     }
                     canvas.drawBitmap(bitmap, i*cellsize, j*cellsize, paint);
+
                 }
 
                 //Making grid visible here using drawRect()
