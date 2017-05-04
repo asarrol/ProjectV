@@ -1,0 +1,8 @@
+com.oreilly.demo.android.pa.uidemo
+com.oreilly.demo.android.pa.uidemo.common
+com.oreilly.demo.android.pa.uidemo.controller
+com.oreilly.demo.android.pa.uidemo.model
+com.oreilly.demo.android.pa.uidemo.model.cell
+com.oreilly.demo.android.pa.uidemo.model.monster
+com.oreilly.demo.android.pa.uidemo.model.timer
+com.oreilly.demo.android.pa.uidemo.view
