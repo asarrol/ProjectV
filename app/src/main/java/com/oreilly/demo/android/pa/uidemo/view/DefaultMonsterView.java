@@ -15,6 +15,9 @@ import com.oreilly.demo.android.pa.uidemo.common.Constants;
 import com.oreilly.demo.android.pa.uidemo.model.cell.Cell;
 import com.oreilly.demo.android.pa.uidemo.model.monster.Monster;
 
+import static com.oreilly.demo.android.pa.uidemo.common.Constants.CELL_SIZE;
+import static com.oreilly.demo.android.pa.uidemo.common.Constants.VIEW_HEIGHT_MINUS;
+
 /**
  * Created by Sarah on 5/3/2017.
  */
@@ -45,10 +48,8 @@ public class DefaultMonsterView extends View {
         paint.setStyle(Paint.Style.STROKE);
         displayheight = context.getResources().getDisplayMetrics().heightPixels;
         displaywidth = context.getResources().getDisplayMetrics().widthPixels;
-        gridwidth = displaywidth/ Constants.CELL_SIZE;
-        gridheight = (displayheight-Constants.VIEW_HEIGHT_MINUS)/Constants.CELL_SIZE;
-        Bitmap bitmapp = BitmapFactory.decodeResource(getResources(), R.drawable.green);
-        Bitmap bitmapv = BitmapFactory.decodeResource(getResources(), R.drawable.yellow);
+        gridwidth = displaywidth/ CELL_SIZE;
+        gridheight = (displayheight- VIEW_HEIGHT_MINUS)/CELL_SIZE;
     }
 
     @Override
@@ -70,7 +71,7 @@ public class DefaultMonsterView extends View {
                         //otherwise access vulnerable picture
                         bitmap = bitmapv;
                     }
-                    canvas.drawBitmap(bitmap, i * cellsize, j * cellsize, paint);
+                    canvas.drawBitmap(bitmap, i*cellsize, j*cellsize, paint);
                 }
 
                 //Making grid visible here using drawRect()

@@ -28,7 +28,7 @@ public class CreateNewMonsters implements Time {
                 // fire event
                 timelistener.onTick(CreateNewMonsters.this);
             }
-        }, /*initial delay*/ 2000, /*periodic delay*/ 5000);
+        }, /*initial delay*/ 2000, /*periodic delay*/ 500);
     }
 
     @Override

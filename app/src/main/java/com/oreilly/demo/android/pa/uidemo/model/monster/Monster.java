@@ -136,6 +136,20 @@ public class Monster implements Runnable, Actor, MonsterStateTransitions {
         }
     };
 
+    /*
+    private Runnable newMonster = new Runnable() {
+        public void run() {
+            try {
+
+            } catch (InterruptedException e) {
+                // if interrupted before entering the cell, then set interrupted flag
+                // so that the worker thread can detect this
+                Thread.currentThread().interrupt();
+            }
+        }
+    };
+    */
+
     private static Random random = new Random();
 
     void changeState(){
@@ -160,9 +174,9 @@ public class Monster implements Runnable, Actor, MonsterStateTransitions {
                 //schedule a change of monster state for execution
                 // schedule a move for execution
                 execute(changeState);
-                Thread.sleep(3000);
+                Thread.sleep(2000);
                 execute(move);
-                Thread.sleep(3000);
+                Thread.sleep(600);
 
             } catch (InterruptedException exc) {
                 Thread.currentThread().interrupt();
