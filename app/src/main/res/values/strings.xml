@@ -4,5 +4,6 @@
     <string name="defaultText">0</string>
     <string name="labelRed">Red</string>
     <string name="labelGreen">Green</string>
+    <string name="labelYellow"></string>
     <string name="menuClear">Clear</string>
 </resources>

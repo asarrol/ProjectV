@@ -9,9 +9,9 @@ Please refer to the book chapter for detailed information on this example.
 
 # Learning Objectives
 
-* Mapping the model-view-controller (MVC) architecture to Android
+* Mapping the model-view-com.oreilly.demo.android.pa.uidemo.controller (MVC) architecture to Android
 * Defining custom view components in Android
-* Understanding the difference between model-view-controller and model-view-adapter (MVA)
+* Understanding the difference between model-view-com.oreilly.demo.android.pa.uidemo.controller and model-view-adapter (MVA)
 * Android application life cycle management
 
 # Setting up the Environment
