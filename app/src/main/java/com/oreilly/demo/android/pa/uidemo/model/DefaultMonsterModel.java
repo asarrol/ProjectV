@@ -14,6 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import android.app.Activity;
+import android.content.Context;
+import android.widget.Toast;
+
 
 /**
  * Created by Sarah on 5/3/2017.
@@ -24,7 +28,7 @@ import java.util.Random;
 * similar idea to having default stopwatch model.
 * */
 
-public class DefaultMonsterModel implements MonsterModel {
+public class DefaultMonsterModel extends Activity implements MonsterModel {
 
     private ModelListener modellistener;
     private MonsterStateListener monsterlistener;
@@ -82,8 +86,19 @@ public class DefaultMonsterModel implements MonsterModel {
     }
 
     @Override
-    public void removeLiveActor(Actor actor){
-        liveactors.remove(actor);
+    public void removeLiveActor(Actor actor){liveactors.remove(actor);}
+
+    @Override
+    public void noMoreMonsters()
+    {
+        if (liveactors.isEmpty())
+        {
+            Context context =getBaseContext();
+            CharSequence text = "You WIN!!!!";
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+        }
     }
 
     //let model know to change state

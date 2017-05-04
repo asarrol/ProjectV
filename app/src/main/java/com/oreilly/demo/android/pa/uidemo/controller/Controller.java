@@ -1,6 +1,7 @@
 package com.oreilly.demo.android.pa.uidemo.controller;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.view.Menu;
@@ -20,6 +21,8 @@ import com.oreilly.demo.android.pa.uidemo.model.monster.Monster;
 import com.oreilly.demo.android.pa.uidemo.view.DefaultMonsterView;
 
 import java.util.Random;
+import android.widget.Toast;
+
 
 /**
  * Created by Sarah on 5/3/2017.
@@ -45,7 +48,7 @@ public class Controller extends Activity implements ModelListener, ViewListener 
     * */
 
     @Override
-    protected void onCreate(Bundle savedInstanceState){
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         monsterview = (DefaultMonsterView) findViewById(R.id.Monster);
@@ -56,8 +59,8 @@ public class Controller extends Activity implements ModelListener, ViewListener 
         width = displayDimensions.x / Constants.CELL_SIZE;
         height = (displayDimensions.y - Constants.VIEW_HEIGHT_MINUS) / Constants.CELL_SIZE;
         Cell[][] cells = new MonsterCell[width][height];
-        for (int i = 0; i < width; i ++) {
-            for (int j = 0; j < height; j ++) {
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
                 cells[i][j] = new MonsterCell(1, this);
             }
         }
@@ -71,7 +74,7 @@ public class Controller extends Activity implements ModelListener, ViewListener 
             int x = random.nextInt(width);
             int y = random.nextInt(height);
             Actor monster = new Monster();
-            ((Monster)monster).setMonsterStateChangeListener(this);
+            ((Monster) monster).setMonsterStateChangeListener(this);
             monstermodel.addLiveActor(monster);
             monstermodel.addActor(monster, y, x);
         }
@@ -119,8 +122,8 @@ public class Controller extends Activity implements ModelListener, ViewListener 
         Cell[][] grid = monstermodel.getWorld().getGrid();
 
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            int x = (int)event.getX();
-            int y = (int)event.getY();
+            int x = (int) event.getX();
+            int y = (int) event.getY();
             int gridX = x / Constants.CELL_SIZE;
             int gridY = y / Constants.CELL_SIZE;
             if (gridX >= width || gridY >= height) {
@@ -129,17 +132,18 @@ public class Controller extends Activity implements ModelListener, ViewListener 
             Cell cell = grid[gridX][gridY];
             int count = cell.getOccupants().size();
             if (count > 0) {
-                Monster monster = (Monster)cell.getOccupants().get(0);
+                Monster monster = (Monster) cell.getOccupants().get(0);
                 if (!monster.isProtected()) {
                     monstermodel.removeLiveActor(monster);
                     monster.kill();
                     return true;
-                    }
                 }
             }
 
+        }
+
         return false;
-    }
+}
 
     @Override
     public void onMSChange(int stateId) {
