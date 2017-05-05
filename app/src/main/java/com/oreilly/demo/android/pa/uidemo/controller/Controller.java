@@ -39,7 +39,9 @@ public class Controller extends Activity implements ModelListener, ViewListener 
     private int height;
     private DefaultMonsterView monsterview;
     private DefaultMonsterModel monstermodel;
+
     UIUpdateThread UIupdater;
+
 
     /* onCreate
     1. Get display dimensions and derive grid width&height
@@ -96,6 +98,8 @@ public class Controller extends Activity implements ModelListener, ViewListener 
         UIupdater = new UIUpdateThread(monsterview);
         (new Thread(UIupdater)).start();
 
+
+
     }
 
     @Override
@@ -120,30 +124,34 @@ public class Controller extends Activity implements ModelListener, ViewListener 
     public boolean onTouch(View v, MotionEvent event) {
 
         Cell[][] grid = monstermodel.getWorld().getGrid();
-
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            int x = (int) event.getX();
-            int y = (int) event.getY();
-            int gridX = x / Constants.CELL_SIZE;
-            int gridY = y / Constants.CELL_SIZE;
-            if (gridX >= width || gridY >= height) {
-                return false;
-            }
-            Cell cell = grid[gridX][gridY];
-            int count = cell.getOccupants().size();
-            if (count > 0) {
-                Monster monster = (Monster) cell.getOccupants().get(0);
-                if (!monster.isProtected()) {
-                    monstermodel.removeLiveActor(monster);
-                    monster.kill();
-                    return true;
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                int x = (int) event.getX();
+                int y = (int) event.getY();
+                int gridX = x / Constants.CELL_SIZE;
+                int gridY = y / Constants.CELL_SIZE;
+                if (gridX >= width || gridY >= height) {
+                    return false;
+                }
+                Cell cell = grid[gridX][gridY];
+                int count = cell.getOccupants().size();
+                if (count > 0) {
+                    Monster monster = (Monster) cell.getOccupants().get(0);
+                    if (!monster.isProtected()) {
+                        monstermodel.removeLiveActor(monster);
+                        monster.kill();
+                        return true;
+                    }
                 }
             }
-
+        if (monstermodel.getLiveActors().size() == 0) {
+            Context context = getBaseContext();
+            CharSequence text = "You WIN!!!!";
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
         }
-
         return false;
-}
+    }
 
     @Override
     public void onMSChange(int stateId) {

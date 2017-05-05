@@ -57,10 +57,12 @@ public class DefaultMonsterModel extends Activity implements MonsterModel {
 
 
     //ontick, we add an actor at whatever time interval the ontick method is set to
+    //this isn't working right now though, new monsters are not being added periodically
+    //I think the new monsters aren't being caught by the default
+
     @Override
     public void onTick(Time observer){
         Random random = new Random();
-
         Monster monster = new Monster();
         monster.setMonsterStateChangeListener(this); //set this new monsters listener to the default
         int x = random.nextInt(cellworld.getGrid().length); //get random x, y coordinates in grid
@@ -88,18 +90,19 @@ public class DefaultMonsterModel extends Activity implements MonsterModel {
     @Override
     public void removeLiveActor(Actor actor){liveactors.remove(actor);}
 
-    @Override
+    //@Override
     public void noMoreMonsters()
     {
         if (liveactors.isEmpty())
         {
-            Context context =getBaseContext();
+            Context context = getBaseContext();
             CharSequence text = "You WIN!!!!";
             int duration = Toast.LENGTH_SHORT;
             Toast toast = Toast.makeText(context, text, duration);
             toast.show();
         }
     }
+
 
     //let model know to change state
     @Override

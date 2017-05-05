@@ -19,5 +19,5 @@ public interface MonsterModel extends TimerListener, MonsterStateListener {
     List<Actor> getLiveActors();
     void addLiveActor(Actor actor);
     void removeLiveActor(Actor actor);
-    void noMoreMonsters();
+    //void noMoreMonsters();
 }

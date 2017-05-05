@@ -5,5 +5,5 @@ package com.oreilly.demo.android.pa.uidemo;
  */
 
 public interface MonsterStateListener {
-    public void onMSChange(int stateid);
+    void onMSChange(int stateid);
 }
